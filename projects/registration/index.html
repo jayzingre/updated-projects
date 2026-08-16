@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Demo — Jay Zingre's Projects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAFAFF; --ink:#15131F; --ink-soft:#57536A;
+    --blue:#2F5DFF; --coral:#FF4D6D; --yellow:#FFC93C; --violet:#7C5CFC; --green:#12B76A;
+    --card:#FFFFFF; --r:16px;
+  }
+  *{box-sizing:border-box;}
+  :focus-visible{outline:3px solid var(--blue); outline-offset:2px;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.5;padding:32px 18px 60px;}
+  .display{font-family:'Archivo Black','Space Grotesk',sans-serif;font-weight:400;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .wrap{max-width:760px;margin:0 auto;}
+  .hard{border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink); border-radius:var(--r);}
+
+  header{margin-bottom:24px;}
+  header a{font-family:'JetBrains Mono',monospace; font-size:12px; text-decoration:none; color:var(--ink-soft);}
+  h1{font-size:clamp(24px,4vw,34px); margin:10px 0 6px;}
+  .sub{color:var(--ink-soft); margin:0 0 26px; max-width:520px;}
+
+  .tabs{display:flex; gap:10px; margin-bottom:22px; flex-wrap:wrap;}
+  .tab-btn{
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:12.5px;
+    text-transform:uppercase; letter-spacing:0.03em;
+    border:2.5px solid var(--ink); border-radius:999px;
+    padding:10px 18px; background:#fff; color:var(--ink); cursor:pointer;
+    box-shadow:3px 3px 0 var(--ink); transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .tab-btn:hover{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink);}
+  .tab-btn.active{background:var(--ink); color:#fff;}
+
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .card{background:var(--card); padding:26px; margin-bottom:20px;}
+  .card h2{font-size:19px; margin:0 0 4px;}
+  .card .note{color:var(--ink-soft); font-size:13.5px; margin:0 0 18px;}
+
+  label{display:block; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); margin:14px 0 6px;}
+  label:first-of-type{margin-top:0;}
+  input, select, textarea{
+    width:100%; padding:10px 12px; border:2px solid var(--ink); border-radius:8px;
+    font-family:'Space Grotesk',sans-serif; font-size:14.5px; background:#fff; color:var(--ink);
+  }
+  textarea{resize:vertical;}
+  .err{color:var(--coral); font-size:12.5px; margin-top:5px; display:block; font-weight:600; min-height:1px;}
+
+  .btn{
+    margin-top:18px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px;
+    text-transform:uppercase; letter-spacing:.03em; padding:12px 20px; border:2.5px solid var(--ink);
+    border-radius:10px; background:var(--blue); color:#fff; cursor:pointer;
+    box-shadow:4px 4px 0 var(--ink); transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover{transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink);}
+  .btn.ghost{background:#fff; color:var(--ink);}
+  .btn.small{padding:8px 14px; font-size:11.5px; margin-top:0;}
+  .btn.coral{background:var(--coral);}
+  .btn.green{background:var(--green);}
+
+  .msg{padding:12px 16px; border-radius:8px; font-size:13.5px; font-weight:600; margin-bottom:16px; border:2px solid var(--ink);}
+  .msg.ok{background:#E7FBF0; color:#0A6B3E;}
+  .msg.bad{background:#FDEBEE; color:#A11433;}
+
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  th,td{text-align:left; padding:9px 10px; border-bottom:1px solid #E4E2F0;}
+  th{font-family:'JetBrains Mono',monospace; font-size:10.5px; text-transform:uppercase; color:var(--ink-soft); letter-spacing:.04em;}
+  tr:last-child td{border-bottom:none;}
+  .empty-row td{color:var(--ink-soft); font-style:italic;}
+
+  .split{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  @media (max-width:560px){.split{grid-template-columns:1fr;}}
+
+  .sql-box{
+    background:var(--ink); color:#B9F5D0; font-family:'JetBrains Mono',monospace; font-size:12px;
+    padding:14px 16px; border-radius:10px; margin:0 0 20px; overflow-x:auto; white-space:pre-wrap; word-break:break-word;
+  }
+  .sql-box .lbl{display:block; color:#8B87A6; font-size:10px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;}
+
+  .crud-actions{display:flex; flex-wrap:wrap; gap:10px; margin:16px 0 4px;}
+  .inline-form{display:none; flex-wrap:wrap; gap:10px; align-items:flex-end; margin-top:14px;}
+  .inline-form.show{display:flex;}
+  .inline-form > div{flex:1; min-width:150px;}
+  .inline-form label{margin:0 0 6px;}
+
+  footer{text-align:center; color:var(--ink-soft); font-size:12.5px; margin-top:40px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <a href="https://jayzingre.github.io/">&larr; Back to portfolio</a>
+    <h1 class="display">Live project demos</h1>
+    <p class="sub">Interactive, in-browser versions of the two academic projects — same validation and CRUD logic as the PHP/SQL code, running fully client-side so this page works without a real server.</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="reg" type="button">Student Registration Form</button>
+    <button class="tab-btn" data-tab="db" type="button">College Students Database</button>
+  </div>
+
+  <!-- ================= TAB 1: Registration form ================= -->
+  <section id="reg" class="panel active">
+    <div class="card hard">
+      <h2>Register a student</h2>
+      <p class="note">Same checks as <span class="mono">save.php</span>: required fields + a valid email. Submitting adds a row to the table below — nothing leaves your browser.</p>
+
+      <div id="regMsg"></div>
+
+      <form id="regForm" novalidate>
+        <label for="rName">Full Name</label>
+        <input type="text" id="rName" name="name">
+        <span class="err" id="errName"></span>
+
+        <label for="rEmail">Email</label>
+        <input type="email" id="rEmail" name="email">
+        <span class="err" id="errEmail"></span>
+
+        <div class="split">
+          <div>
+            <label for="rPhone">Phone Number</label>
+            <input type="text" id="rPhone" name="phone">
+            <span class="err" id="errPhone"></span>
+          </div>
+          <div>
+            <label for="rCourse">Course</label>
+            <select id="rCourse" name="course">
+              <option value="BCA">BCA</option>
+              <option value="BCom">BCom</option>
+              <option value="BSc">BSc</option>
+              <option value="BBA">BBA</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="rAddress">Address</label>
+        <textarea id="rAddress" name="address" rows="2"></textarea>
+        <span class="err" id="errAddress"></span>
+
+        <button type="submit" class="btn">Register</button>
+      </form>
+    </div>
+
+    <div class="card hard">
+      <h2>Registered students</h2>
+      <p class="note">Live output of <span class="mono">view.php</span> — every submission above appears here instantly.</p>
+      <table>
+        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Course</th><th>Address</th></tr></thead>
+        <tbody id="regTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= TAB 2: College Students Database ================= -->
+  <section id="db" class="panel">
+    <div class="card hard">
+      <h2>Students &amp; enrollments</h2>
+      <p class="note">Pre-loaded with the same rows as <span class="mono">sample_data.sql</span>. Each action below runs the matching query from <span class="mono">crud_queries.sql</span>.</p>
+
+      <div id="dbSqlBox" class="sql-box"><span class="lbl">Last query run</span><span id="dbSqlText">SELECT s.name, c.course_name FROM students s JOIN enrollment e ON s.student_id = e.student_id JOIN courses c ON e.course_id = c.course_id;</span></div>
+
+      <table>
+        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Course</th></tr></thead>
+        <tbody id="dbTableBody"></tbody>
+      </table>
+
+      <div class="crud-actions">
+        <button class="btn small green" id="btnShowAdd" type="button">+ Add student</button>
+        <button class="btn small ghost" id="btnShowUpdate" type="button">Update phone</button>
+        <button class="btn small coral" id="btnShowDelete" type="button">Delete student</button>
+      </div>
+
+      <form id="addForm" class="inline-form">
+        <div><label for="aName">Name</label><input type="text" id="aName"></div>
+        <div><label for="aEmail">Email</label><input type="email" id="aEmail"></div>
+        <div><label for="aPhone">Phone</label><input type="text" id="aPhone"></div>
+        <div><label for="aCourse">Course</label><select id="aCourse"></select></div>
+        <button type="submit" class="btn small green">Insert</button>
+      </form>
+
+      <form id="updateForm" class="inline-form">
+        <div><label for="uStudent">Student</label><select id="uStudent"></select></div>
+        <div><label for="uPhone">New phone</label><input type="text" id="uPhone"></div>
+        <button type="submit" class="btn small">Update</button>
+      </form>
+
+      <form id="deleteForm" class="inline-form">
+        <div><label for="dStudent">Student</label><select id="dStudent"></select></div>
+        <button type="submit" class="btn small coral">Delete</button>
+      </form>
+
+      <div id="dbMsg" style="margin-top:14px;"></div>
+    </div>
+  </section>
+
+  <footer>Built by Jay Sanjay Zingre &middot; client-side demo of the PHP/MySQL &amp; SQL projects</footer>
+</div>
+
+<script>
+(function(){
+  function escapeHtml(str){
+    var d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  // ---------- tabs ----------
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  function activateTab(name){
+    tabBtns.forEach(function(b){ b.classList.toggle('active', b.dataset.tab === name); });
+    document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('active', p.id === name); });
+  }
+  tabBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){ activateTab(btn.dataset.tab); });
+  });
+  if (window.location.hash === '#db') { activateTab('db'); }
+
+  // ================= TAB 1: Registration Form =================
+  var registrations = [];
+  var nextRegId = 1;
+
+  function renderRegistrations(){
+    var body = document.getElementById('regTableBody');
+    if (registrations.length === 0) {
+      body.innerHTML = '<tr class="empty-row"><td colspan="6">No students registered yet.</td></tr>';
+      return;
+    }
+    body.innerHTML = registrations.map(function(r){
+      return '<tr><td>' + r.id + '</td><td>' + escapeHtml(r.name) + '</td><td>' + escapeHtml(r.email) +
+             '</td><td>' + escapeHtml(r.phone) + '</td><td>' + escapeHtml(r.course) + '</td><td>' + escapeHtml(r.address) + '</td></tr>';
+    }).join('');
+  }
+
+  document.getElementById('regForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = document.getElementById('rName').value.trim();
+    var email = document.getElementById('rEmail').value.trim();
+    var phone = document.getElementById('rPhone').value.trim();
+    var course = document.getElementById('rCourse').value;
+    var address = document.getElementById('rAddress').value.trim();
+
+    ['errName','errEmail','errPhone','errAddress'].forEach(function(id){ document.getElementById(id).textContent = ''; });
+    document.getElementById('regMsg').innerHTML = '';
+
+    var ok = true;
+    if (!name){ document.getElementById('errName').textContent = 'Please enter a name.'; ok = false; }
+    if (!email){ document.getElementById('errEmail').textContent = 'Please enter an email.'; ok = false; }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ document.getElementById('errEmail').textContent = 'Please enter a valid email address.'; ok = false; }
+    if (!phone){ document.getElementById('errPhone').textContent = 'Please enter a phone number.'; ok = false; }
+    if (!address){ document.getElementById('errAddress').textContent = 'Please enter an address.'; ok = false; }
+
+    if (!ok) {
+      document.getElementById('regMsg').innerHTML = '<div class="msg bad">Please fill all fields correctly.</div>';
+      return;
+    }
+
+    registrations.push({ id: nextRegId++, name: name, email: email, phone: phone, course: course, address: address });
+    renderRegistrations();
+    document.getElementById('regMsg').innerHTML = '<div class="msg ok">Registration successful!</div>';
+    document.getElementById('regForm').reset();
+  });
+
+  renderRegistrations();
+
+  // ================= TAB 2: College Students Database =================
+  var courses = [
+    { id: 1, name: 'BCA', duration: '3 Years' },
+    { id: 2, name: 'BCom', duration: '3 Years' },
+    { id: 3, name: 'BSc', duration: '3 Years' }
+  ];
+  var students = [
+    { id: 1, name: 'Jay Zingre', email: 'jay@example.com', phone: '9812345670', courseId: 1 },
+    { id: 2, name: 'Aarav Sharma', email: 'aarav@example.com', phone: '9812345671', courseId: 2 },
+    { id: 3, name: 'Priya Deshmukh', email: 'priya@example.com', phone: '9812345672', courseId: 1 }
+  ];
+  var nextStudentId = 4;
+
+  function courseName(id){
+    var match = courses.filter(function(c){ return c.id === id; })[0];
+    return match ? match.name : '\u2014';
+  }
+
+  function renderStudents(){
+    var body = document.getElementById('dbTableBody');
+    if (students.length === 0) {
+      body.innerHTML = '<tr class="empty-row"><td colspan="5">No students in the database.</td></tr>';
+      return;
+    }
+    body.innerHTML = students.map(function(s){
+      return '<tr><td>' + s.id + '</td><td>' + escapeHtml(s.name) + '</td><td>' + escapeHtml(s.email) +
+             '</td><td>' + escapeHtml(s.phone) + '</td><td>' + courseName(s.courseId) + '</td></tr>';
+    }).join('');
+  }
+
+  function setSql(text){
+    document.getElementById('dbSqlText').textContent = text;
+  }
+
+  function populateCourseSelect(sel){
+    sel.innerHTML = courses.map(function(c){ return '<option value="' + c.id + '">' + c.name + '</option>'; }).join('');
+  }
+  function populateStudentSelect(sel){
+    if (students.length === 0) { sel.innerHTML = '<option value="">No students</option>'; return; }
+    sel.innerHTML = students.map(function(s){ return '<option value="' + s.id + '">' + escapeHtml(s.name) + '</option>'; }).join('');
+  }
+
+  populateCourseSelect(document.getElementById('aCourse'));
+
+  var addForm = document.getElementById('addForm');
+  var updateForm = document.getElementById('updateForm');
+  var deleteForm = document.getElementById('deleteForm');
+
+  function hideAllForms(){
+    addForm.classList.remove('show');
+    updateForm.classList.remove('show');
+    deleteForm.classList.remove('show');
+  }
+
+  document.getElementById('btnShowAdd').addEventListener('click', function(){
+    var wasShown = addForm.classList.contains('show');
+    hideAllForms();
+    if (!wasShown) addForm.classList.add('show');
+  });
+  document.getElementById('btnShowUpdate').addEventListener('click', function(){
+    var wasShown = updateForm.classList.contains('show');
+    hideAllForms();
+    if (!wasShown) { populateStudentSelect(document.getElementById('uStudent')); updateForm.classList.add('show'); }
+  });
+  document.getElementById('btnShowDelete').addEventListener('click', function(){
+    var wasShown = deleteForm.classList.contains('show');
+    hideAllForms();
+    if (!wasShown) { populateStudentSelect(document.getElementById('dStudent')); deleteForm.classList.add('show'); }
+  });
+
+  addForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = document.getElementById('aName').value.trim();
+    var email = document.getElementById('aEmail').value.trim();
+    var phone = document.getElementById('aPhone').value.trim();
+    var courseId = parseInt(document.getElementById('aCourse').value, 10);
+    var msg = document.getElementById('dbMsg');
+
+    if (!name || !email || !phone) {
+      msg.innerHTML = '<div class="msg bad">Fill in name, email and phone.</div>';
+      return;
+    }
+    students.push({ id: nextStudentId++, name: name, email: email, phone: phone, courseId: courseId });
+    setSql("INSERT INTO students (name, email, phone) VALUES ('" + name + "', '" + email + "', '" + phone + "');");
+    renderStudents();
+    msg.innerHTML = '<div class="msg ok">Student added.</div>';
+    addForm.reset();
+    hideAllForms();
+  });
+
+  updateForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var id = parseInt(document.getElementById('uStudent').value, 10);
+    var phone = document.getElementById('uPhone').value.trim();
+    var msg = document.getElementById('dbMsg');
+    if (!phone) { msg.innerHTML = '<div class="msg bad">Enter a new phone number.</div>'; return; }
+    var s = students.filter(function(s){ return s.id === id; })[0];
+    if (s) { s.phone = phone; }
+    setSql("UPDATE students SET phone = '" + phone + "' WHERE student_id = " + id + ";");
+    renderStudents();
+    msg.innerHTML = '<div class="msg ok">Phone number updated.</div>';
+    updateForm.reset();
+    hideAllForms();
+  });
+
+  deleteForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var id = parseInt(document.getElementById('dStudent').value, 10);
+    students = students.filter(function(s){ return s.id !== id; });
+    setSql('DELETE FROM students WHERE student_id = ' + id + ';');
+    renderStudents();
+    document.getElementById('dbMsg').innerHTML = '<div class="msg ok">Student deleted.</div>';
+    hideAllForms();
+  });
+
+  renderStudents();
+})();
+</script>
+</body>
+</html>
