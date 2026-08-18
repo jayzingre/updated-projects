@@ -1,391 +1,1354 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Demo — Jay Zingre's Projects</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#FAFAFF; --ink:#15131F; --ink-soft:#57536A;
-    --blue:#2F5DFF; --coral:#FF4D6D; --yellow:#FFC93C; --violet:#7C5CFC; --green:#12B76A;
-    --card:#FFFFFF; --r:16px;
-  }
-  *{box-sizing:border-box;}
-  :focus-visible{outline:3px solid var(--blue); outline-offset:2px;}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.5;padding:32px 18px 60px;}
-  .display{font-family:'Archivo Black','Space Grotesk',sans-serif;font-weight:400;}
-  .mono{font-family:'JetBrains Mono',monospace;}
-  .wrap{max-width:760px;margin:0 auto;}
-  .hard{border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink); border-radius:var(--r);}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  header{margin-bottom:24px;}
-  header a{font-family:'JetBrains Mono',monospace; font-size:12px; text-decoration:none; color:var(--ink-soft);}
-  h1{font-size:clamp(24px,4vw,34px); margin:10px 0 6px;}
-  .sub{color:var(--ink-soft); margin:0 0 26px; max-width:520px;}
+    <title>EduRegister | Student Registration</title>
 
-  .tabs{display:flex; gap:10px; margin-bottom:22px; flex-wrap:wrap;}
-  .tab-btn{
-    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:12.5px;
-    text-transform:uppercase; letter-spacing:0.03em;
-    border:2.5px solid var(--ink); border-radius:999px;
-    padding:10px 18px; background:#fff; color:var(--ink); cursor:pointer;
-    box-shadow:3px 3px 0 var(--ink); transition:transform .12s ease, box-shadow .12s ease;
-  }
-  .tab-btn:hover{transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink);}
-  .tab-btn.active{background:var(--ink); color:#fff;}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  .panel{display:none;}
-  .panel.active{display:block;}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  .card{background:var(--card); padding:26px; margin-bottom:20px;}
-  .card h2{font-size:19px; margin:0 0 4px;}
-  .card .note{color:var(--ink-soft); font-size:13.5px; margin:0 0 18px;}
+        body {
+            font-family: "Inter", sans-serif;
+            background: #f4f7fb;
+            color: #14213d;
+            min-height: 100vh;
+        }
 
-  label{display:block; font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); margin:14px 0 6px;}
-  label:first-of-type{margin-top:0;}
-  input, select, textarea{
-    width:100%; padding:10px 12px; border:2px solid var(--ink); border-radius:8px;
-    font-family:'Space Grotesk',sans-serif; font-size:14.5px; background:#fff; color:var(--ink);
-  }
-  textarea{resize:vertical;}
-  .err{color:var(--coral); font-size:12.5px; margin-top:5px; display:block; font-weight:600; min-height:1px;}
+        /* Header */
 
-  .btn{
-    margin-top:18px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px;
-    text-transform:uppercase; letter-spacing:.03em; padding:12px 20px; border:2.5px solid var(--ink);
-    border-radius:10px; background:var(--blue); color:#fff; cursor:pointer;
-    box-shadow:4px 4px 0 var(--ink); transition:transform .12s ease, box-shadow .12s ease;
-  }
-  .btn:hover{transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink);}
-  .btn.ghost{background:#fff; color:var(--ink);}
-  .btn.small{padding:8px 14px; font-size:11.5px; margin-top:0;}
-  .btn.coral{background:var(--coral);}
-  .btn.green{background:var(--green);}
+        header {
+            background: #071d40;
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
 
-  .msg{padding:12px 16px; border-radius:8px; font-size:13.5px; font-weight:600; margin-bottom:16px; border:2px solid var(--ink);}
-  .msg.ok{background:#E7FBF0; color:#0A6B3E;}
-  .msg.bad{background:#FDEBEE; color:#A11433;}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-  table{width:100%; border-collapse:collapse; font-size:13.5px;}
-  th,td{text-align:left; padding:9px 10px; border-bottom:1px solid #E4E2F0;}
-  th{font-family:'JetBrains Mono',monospace; font-size:10.5px; text-transform:uppercase; color:var(--ink-soft); letter-spacing:.04em;}
-  tr:last-child td{border-bottom:none;}
-  .empty-row td{color:var(--ink-soft); font-style:italic;}
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: #1769ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
 
-  .split{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
-  @media (max-width:560px){.split{grid-template-columns:1fr;}}
+        .logo h2 {
+            font-size: 19px;
+        }
 
-  .sql-box{
-    background:var(--ink); color:#B9F5D0; font-family:'JetBrains Mono',monospace; font-size:12px;
-    padding:14px 16px; border-radius:10px; margin:0 0 20px; overflow-x:auto; white-space:pre-wrap; word-break:break-word;
-  }
-  .sql-box .lbl{display:block; color:#8B87A6; font-size:10px; text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;}
+        .logo span {
+            display: block;
+            color: #aebbd0;
+            font-size: 9px;
+            margin-top: 3px;
+            font-weight: 400;
+        }
 
-  .crud-actions{display:flex; flex-wrap:wrap; gap:10px; margin:16px 0 4px;}
-  .inline-form{display:none; flex-wrap:wrap; gap:10px; align-items:flex-end; margin-top:14px;}
-  .inline-form.show{display:flex;}
-  .inline-form > div{flex:1; min-width:150px;}
-  .inline-form label{margin:0 0 6px;}
+        header a {
+            color: white;
+            text-decoration: none;
+            font-size: 12px;
+            padding: 9px 15px;
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 7px;
+        }
 
-  footer{text-align:center; color:var(--ink-soft); font-size:12.5px; margin-top:40px;}
-</style>
+        header a:hover {
+            background: white;
+            color: #071d40;
+        }
+
+        /* Hero */
+
+        .hero {
+            background: linear-gradient(120deg, #071d40, #124b9a);
+            color: white;
+            padding: 55px 7%;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 span {
+            color: #54a0ff;
+        }
+
+        .hero p {
+            color: #d2dced;
+            font-size: 13px;
+            max-width: 650px;
+            margin: auto;
+            line-height: 1.7;
+        }
+
+        /* Main */
+
+        .container {
+            width: min(1050px, 92%);
+            margin: -35px auto 50px;
+            position: relative;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 18px 50px rgba(20,50,90,0.12);
+            padding: 30px;
+        }
+
+        .form-title {
+            margin-bottom: 25px;
+        }
+
+        .form-title h2 {
+            font-size: 20px;
+        }
+
+        .form-title p {
+            color: #7a879b;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        /* Sections */
+
+        .section {
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            border-bottom: 1px solid #e8edf4;
+            padding-bottom: 10px;
+            margin-bottom: 18px;
+        }
+
+        .section-number {
+            width: 27px;
+            height: 27px;
+            border-radius: 7px;
+            background: #eaf2ff;
+            color: #1769ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .section-title h3 {
+            font-size: 13px;
+        }
+
+        /* Fields */
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 10px;
+            font-weight: 600;
+            margin-bottom: 7px;
+            color: #536176;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #dce3ec;
+            background: #fbfcfe;
+            border-radius: 8px;
+            padding: 11px 12px;
+            outline: none;
+            font-size: 11px;
+            color: #172238;
+            transition: 0.2s;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #1769ff;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(23,105,255,0.08);
+        }
+
+        .error {
+            border-color: #e34d54 !important;
+        }
+
+        .error-text {
+            color: #e34d54;
+            font-size: 9px;
+            margin-top: 4px;
+        }
+
+        /* Buttons */
+
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            border-top: 1px solid #e8edf4;
+            padding-top: 22px;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .reset {
+            background: #eef2f6;
+            color: #455267;
+        }
+
+        .reset:hover {
+            background: #e1e6ed;
+        }
+
+        .preview-btn {
+            background: white;
+            color: #1769ff;
+            border: 1px solid #1769ff;
+        }
+
+        .preview-btn:hover {
+            background: #edf4ff;
+        }
+
+        .submit {
+            background: #1769ff;
+            color: white;
+        }
+
+        .submit:hover {
+            background: #0d57d5;
+            transform: translateY(-1px);
+        }
+
+        /* Success */
+
+        .success {
+            display: none;
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 10px;
+            background: #eaf9f1;
+            border: 1px solid #b9e8cd;
+            color: #087443;
+            font-size: 11px;
+        }
+
+        .success strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        /* Preview */
+
+        .preview {
+            display: none;
+            margin-top: 25px;
+            border: 1px solid #dfe6ef;
+            border-radius: 12px;
+            padding: 22px;
+            background: #fbfcff;
+        }
+
+        .preview h3 {
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 9px;
+        }
+
+        .preview-item {
+            background: white;
+            padding: 11px;
+            border-radius: 7px;
+            border: 1px solid #e8edf3;
+        }
+
+        .preview-item small {
+            display: block;
+            color: #8290a4;
+            font-size: 8px;
+            margin-bottom: 4px;
+        }
+
+        .preview-item strong {
+            font-size: 10px;
+        }
+
+        /* Footer */
+
+        footer {
+            text-align: center;
+            color: #8793a6;
+            font-size: 9px;
+            padding: 25px;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 800px) {
+
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+
+        }
+
+        @media (max-width: 550px) {
+
+            header {
+                padding: 15px 20px;
+            }
+
+            header a {
+                display: none;
+            }
+
+            .hero {
+                padding: 40px 20px 70px;
+            }
+
+            .hero h1 {
+                font-size: 27px;
+            }
+
+            .container {
+                width: 94%;
+                margin-top: -35px;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .buttons button {
+                width: 100%;
+            }
+
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<div class="wrap">
 
-  <header>
-    <a href="https://jayzingre.github.io/">&larr; Back to portfolio</a>
-    <h1 class="display">Live project demos</h1>
-    <p class="sub">Interactive, in-browser versions of the two academic projects — same validation and CRUD logic as the PHP/SQL code, running fully client-side so this page works without a real server.</p>
-  </header>
+<header>
 
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="reg" type="button">Student Registration Form</button>
-    <button class="tab-btn" data-tab="db" type="button">College Students Database</button>
-  </div>
+    <div class="logo">
+        <div class="logo-icon">🎓</div>
 
-  <!-- ================= TAB 1: Registration form ================= -->
-  <section id="reg" class="panel active">
-    <div class="card hard">
-      <h2>Register a student</h2>
-      <p class="note">Same checks as <span class="mono">save.php</span>: required fields + a valid email. Submitting adds a row to the table below — nothing leaves your browser.</p>
+        <div>
+            <h2>EduRegister</h2>
+            <span>Smart Student Registration</span>
+        </div>
+    </div>
 
-      <div id="regMsg"></div>
+    <a href="#registration">Register Student</a>
 
-      <form id="regForm" novalidate>
-        <label for="rName">Full Name</label>
-        <input type="text" id="rName" name="name">
-        <span class="err" id="errName"></span>
+</header>
 
-        <label for="rEmail">Email</label>
-        <input type="email" id="rEmail" name="email">
-        <span class="err" id="errEmail"></span>
 
-        <div class="split">
-          <div>
-            <label for="rPhone">Phone Number</label>
-            <input type="text" id="rPhone" name="phone">
-            <span class="err" id="errPhone"></span>
-          </div>
-          <div>
-            <label for="rCourse">Course</label>
-            <select id="rCourse" name="course">
-              <option value="BCA">BCA</option>
-              <option value="BCom">BCom</option>
-              <option value="BSc">BSc</option>
-              <option value="BBA">BBA</option>
-            </select>
-          </div>
+<section class="hero">
+
+    <h1>Student <span>Registration</span> Form</h1>
+
+    <p>
+        Complete the registration form below to create a student record.
+        Please make sure all information is accurate before submitting.
+    </p>
+
+</section>
+
+
+<main class="container">
+
+<div class="form-card">
+
+    <div class="form-title">
+
+        <h2>Student Registration</h2>
+
+        <p>
+            Fill in the required information carefully.
+            Fields marked with * are mandatory.
+        </p>
+
+    </div>
+
+
+<form id="studentForm" novalidate>
+
+
+<!-- PERSONAL INFORMATION -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        <div class="section-number">01</div>
+
+        <h3>Personal Information</h3>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="field">
+
+            <label>Student ID *</label>
+
+            <input
+                type="text"
+                id="studentId"
+                placeholder="e.g. BCA2026001"
+            >
+
         </div>
 
-        <label for="rAddress">Address</label>
-        <textarea id="rAddress" name="address" rows="2"></textarea>
-        <span class="err" id="errAddress"></span>
 
-        <button type="submit" class="btn">Register</button>
-      </form>
+        <div class="field">
+
+            <label>First Name *</label>
+
+            <input
+                type="text"
+                id="firstName"
+                placeholder="Enter first name"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Last Name *</label>
+
+            <input
+                type="text"
+                id="lastName"
+                placeholder="Enter last name"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Date of Birth *</label>
+
+            <input
+                type="date"
+                id="dob"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Gender *</label>
+
+            <select id="gender">
+
+                <option value="">Select gender</option>
+
+                <option>Male</option>
+
+                <option>Female</option>
+
+                <option>Other</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Blood Group</label>
+
+            <select id="blood">
+
+                <option value="">Select</option>
+
+                <option>A+</option>
+                <option>A-</option>
+                <option>B+</option>
+                <option>B-</option>
+                <option>AB+</option>
+                <option>AB-</option>
+                <option>O+</option>
+                <option>O-</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Phone Number *</label>
+
+            <input
+                type="tel"
+                id="phone"
+                placeholder="10 digit mobile number"
+                maxlength="10"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Email Address *</label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="student@example.com"
+            >
+
+        </div>
+
     </div>
 
-    <div class="card hard">
-      <h2>Registered students</h2>
-      <p class="note">Live output of <span class="mono">view.php</span> — every submission above appears here instantly.</p>
-      <table>
-        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Course</th><th>Address</th></tr></thead>
-        <tbody id="regTableBody"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- ================= TAB 2: College Students Database ================= -->
-  <section id="db" class="panel">
-    <div class="card hard">
-      <h2>Students &amp; enrollments</h2>
-      <p class="note">Pre-loaded with the same rows as <span class="mono">sample_data.sql</span>. Each action below runs the matching query from <span class="mono">crud_queries.sql</span>.</p>
-
-      <div id="dbSqlBox" class="sql-box"><span class="lbl">Last query run</span><span id="dbSqlText">SELECT s.name, c.course_name FROM students s JOIN enrollment e ON s.student_id = e.student_id JOIN courses c ON e.course_id = c.course_id;</span></div>
-
-      <table>
-        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Course</th></tr></thead>
-        <tbody id="dbTableBody"></tbody>
-      </table>
-
-      <div class="crud-actions">
-        <button class="btn small green" id="btnShowAdd" type="button">+ Add student</button>
-        <button class="btn small ghost" id="btnShowUpdate" type="button">Update phone</button>
-        <button class="btn small coral" id="btnShowDelete" type="button">Delete student</button>
-      </div>
-
-      <form id="addForm" class="inline-form">
-        <div><label for="aName">Name</label><input type="text" id="aName"></div>
-        <div><label for="aEmail">Email</label><input type="email" id="aEmail"></div>
-        <div><label for="aPhone">Phone</label><input type="text" id="aPhone"></div>
-        <div><label for="aCourse">Course</label><select id="aCourse"></select></div>
-        <button type="submit" class="btn small green">Insert</button>
-      </form>
-
-      <form id="updateForm" class="inline-form">
-        <div><label for="uStudent">Student</label><select id="uStudent"></select></div>
-        <div><label for="uPhone">New phone</label><input type="text" id="uPhone"></div>
-        <button type="submit" class="btn small">Update</button>
-      </form>
-
-      <form id="deleteForm" class="inline-form">
-        <div><label for="dStudent">Student</label><select id="dStudent"></select></div>
-        <button type="submit" class="btn small coral">Delete</button>
-      </form>
-
-      <div id="dbMsg" style="margin-top:14px;"></div>
-    </div>
-  </section>
-
-  <footer>Built by Jay Sanjay Zingre &middot; client-side demo of the PHP/MySQL &amp; SQL projects</footer>
 </div>
 
+
+<!-- ADDRESS -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        <div class="section-number">02</div>
+
+        <h3>Address Information</h3>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="field full">
+
+            <label>Complete Address *</label>
+
+            <textarea
+                id="address"
+                placeholder="Enter complete residential address"
+            ></textarea>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>City *</label>
+
+            <input
+                type="text"
+                id="city"
+                placeholder="Enter city"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>State *</label>
+
+            <input
+                type="text"
+                id="state"
+                placeholder="Enter state"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Country *</label>
+
+            <input
+                type="text"
+                id="country"
+                value="India"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Postal Code *</label>
+
+            <input
+                type="text"
+                id="postal"
+                maxlength="6"
+                placeholder="6 digit PIN"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ACADEMIC -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        <div class="section-number">03</div>
+
+        <h3>Academic Information</h3>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="field">
+
+            <label>Course *</label>
+
+            <select id="course">
+
+                <option value="">Select course</option>
+
+                <option>BCA</option>
+
+                <option>BBA</option>
+
+                <option>B.Com</option>
+
+                <option>B.Sc</option>
+
+                <option>BA</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Department *</label>
+
+            <select id="department">
+
+                <option value="">Select department</option>
+
+                <option>Computer Applications</option>
+
+                <option>Business Administration</option>
+
+                <option>Commerce</option>
+
+                <option>Science</option>
+
+                <option>Arts</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Semester *</label>
+
+            <select id="semester">
+
+                <option value="">Select semester</option>
+
+                <option>Semester 1</option>
+                <option>Semester 2</option>
+                <option>Semester 3</option>
+                <option>Semester 4</option>
+                <option>Semester 5</option>
+                <option>Semester 6</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Admission Year *</label>
+
+            <select id="admissionYear">
+
+                <option value="">Select year</option>
+
+                <option>2026</option>
+                <option>2025</option>
+                <option>2024</option>
+                <option>2023</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Previous Qualification *</label>
+
+            <select id="qualification">
+
+                <option value="">Select qualification</option>
+
+                <option>12th / HSC</option>
+
+                <option>Diploma</option>
+
+                <option>Other</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Percentage / CGPA *</label>
+
+            <input
+                type="text"
+                id="percentage"
+                placeholder="e.g. 82% or 8.2 CGPA"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- GUARDIAN -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        <div class="section-number">04</div>
+
+        <h3>Parent / Guardian Information</h3>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="field">
+
+            <label>Guardian Name *</label>
+
+            <input
+                type="text"
+                id="guardian"
+                placeholder="Enter guardian name"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Relationship *</label>
+
+            <select id="relationship">
+
+                <option value="">Select</option>
+
+                <option>Father</option>
+
+                <option>Mother</option>
+
+                <option>Guardian</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Guardian Phone *</label>
+
+            <input
+                type="tel"
+                id="guardianPhone"
+                maxlength="10"
+                placeholder="10 digit mobile number"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>Guardian Email</label>
+
+            <input
+                type="email"
+                id="guardianEmail"
+                placeholder="guardian@example.com"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ADDITIONAL -->
+
+<div class="section">
+
+    <div class="section-title">
+
+        <div class="section-number">05</div>
+
+        <h3>Additional Information</h3>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="field">
+
+            <label>Emergency Contact *</label>
+
+            <input
+                type="tel"
+                id="emergency"
+                maxlength="10"
+                placeholder="Emergency number"
+            >
+
+        </div>
+
+
+        <div class="field full">
+
+            <label>Profile Photo</label>
+
+            <input
+                type="file"
+                id="photo"
+                accept="image/*"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- TERMS -->
+
+<div style="margin-bottom:22px">
+
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+
+        <input
+            type="checkbox"
+            id="terms"
+            style="width:auto"
+        >
+
+        I confirm that the information provided is accurate.
+
+    </label>
+
+</div>
+
+
+<div class="buttons">
+
+    <button
+        type="reset"
+        class="reset"
+    >
+        Reset
+    </button>
+
+
+    <button
+        type="button"
+        class="preview-btn"
+        onclick="previewStudent()"
+    >
+        Preview
+    </button>
+
+
+    <button
+        type="submit"
+        class="submit"
+    >
+        Submit Registration
+    </button>
+
+</div>
+
+
+</form>
+
+
+<!-- PREVIEW -->
+
+<div
+    class="preview"
+    id="preview"
+>
+
+    <h3>Registration Preview</h3>
+
+    <div
+        class="preview-grid"
+        id="previewContent"
+    ></div>
+
+</div>
+
+
+<!-- SUCCESS -->
+
+<div
+    class="success"
+    id="success"
+>
+
+    <strong>✓ Registration Successful</strong>
+
+    <span id="successMessage"></span>
+
+</div>
+
+</div>
+
+</main>
+
+
+<footer>
+
+    © 2026 EduRegister · Student Registration System · Front-end Demo
+
+</footer>
+
+
 <script>
-(function(){
-  function escapeHtml(str){
-    var d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-  }
 
-  // ---------- tabs ----------
-  var tabBtns = document.querySelectorAll('.tab-btn');
-  function activateTab(name){
-    tabBtns.forEach(function(b){ b.classList.toggle('active', b.dataset.tab === name); });
-    document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('active', p.id === name); });
-  }
-  tabBtns.forEach(function(btn){
-    btn.addEventListener('click', function(){ activateTab(btn.dataset.tab); });
-  });
-  if (window.location.hash === '#db') { activateTab('db'); }
+const form = document.getElementById("studentForm");
 
-  // ================= TAB 1: Registration Form =================
-  var registrations = [];
-  var nextRegId = 1;
 
-  function renderRegistrations(){
-    var body = document.getElementById('regTableBody');
-    if (registrations.length === 0) {
-      body.innerHTML = '<tr class="empty-row"><td colspan="6">No students registered yet.</td></tr>';
-      return;
+function value(id) {
+
+    return document.getElementById(id).value.trim();
+
+}
+
+
+function validate() {
+
+    let valid = true;
+
+    const required = [
+
+        "studentId",
+        "firstName",
+        "lastName",
+        "dob",
+        "gender",
+        "phone",
+        "email",
+        "address",
+        "city",
+        "state",
+        "country",
+        "postal",
+        "course",
+        "department",
+        "semester",
+        "admissionYear",
+        "qualification",
+        "percentage",
+        "guardian",
+        "relationship",
+        "guardianPhone",
+        "emergency"
+
+    ];
+
+
+    document.querySelectorAll(".error-text").forEach(e => e.remove());
+
+    document.querySelectorAll(".error").forEach(e => {
+
+        e.classList.remove("error");
+
+    });
+
+
+    required.forEach(id => {
+
+        const input = document.getElementById(id);
+
+        if (!input.value.trim()) {
+
+            valid = false;
+
+            input.classList.add("error");
+
+            const error = document.createElement("div");
+
+            error.className = "error-text";
+
+            error.textContent = "This field is required.";
+
+            input.parentElement.appendChild(error);
+
+        }
+
+    });
+
+
+    const phones = ["phone", "guardianPhone", "emergency"];
+
+    phones.forEach(id => {
+
+        const input = document.getElementById(id);
+
+        if (input.value && !/^[0-9]{10}$/.test(input.value)) {
+
+            valid = false;
+
+            input.classList.add("error");
+
+        }
+
+    });
+
+
+    const email = document.getElementById("email");
+
+    if (
+        email.value &&
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)
+    ) {
+
+        valid = false;
+
+        email.classList.add("error");
+
     }
-    body.innerHTML = registrations.map(function(r){
-      return '<tr><td>' + r.id + '</td><td>' + escapeHtml(r.name) + '</td><td>' + escapeHtml(r.email) +
-             '</td><td>' + escapeHtml(r.phone) + '</td><td>' + escapeHtml(r.course) + '</td><td>' + escapeHtml(r.address) + '</td></tr>';
-    }).join('');
-  }
 
-  document.getElementById('regForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    var name = document.getElementById('rName').value.trim();
-    var email = document.getElementById('rEmail').value.trim();
-    var phone = document.getElementById('rPhone').value.trim();
-    var course = document.getElementById('rCourse').value;
-    var address = document.getElementById('rAddress').value.trim();
 
-    ['errName','errEmail','errPhone','errAddress'].forEach(function(id){ document.getElementById(id).textContent = ''; });
-    document.getElementById('regMsg').innerHTML = '';
+    const postal = document.getElementById("postal");
 
-    var ok = true;
-    if (!name){ document.getElementById('errName').textContent = 'Please enter a name.'; ok = false; }
-    if (!email){ document.getElementById('errEmail').textContent = 'Please enter an email.'; ok = false; }
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ document.getElementById('errEmail').textContent = 'Please enter a valid email address.'; ok = false; }
-    if (!phone){ document.getElementById('errPhone').textContent = 'Please enter a phone number.'; ok = false; }
-    if (!address){ document.getElementById('errAddress').textContent = 'Please enter an address.'; ok = false; }
+    if (
+        postal.value &&
+        !/^[0-9]{6}$/.test(postal.value)
+    ) {
 
-    if (!ok) {
-      document.getElementById('regMsg').innerHTML = '<div class="msg bad">Please fill all fields correctly.</div>';
-      return;
+        valid = false;
+
+        postal.classList.add("error");
+
     }
 
-    registrations.push({ id: nextRegId++, name: name, email: email, phone: phone, course: course, address: address });
-    renderRegistrations();
-    document.getElementById('regMsg').innerHTML = '<div class="msg ok">Registration successful!</div>';
-    document.getElementById('regForm').reset();
-  });
 
-  renderRegistrations();
+    if (!document.getElementById("terms").checked) {
 
-  // ================= TAB 2: College Students Database =================
-  var courses = [
-    { id: 1, name: 'BCA', duration: '3 Years' },
-    { id: 2, name: 'BCom', duration: '3 Years' },
-    { id: 3, name: 'BSc', duration: '3 Years' }
-  ];
-  var students = [
-    { id: 1, name: 'Jay Zingre', email: 'jay@example.com', phone: '9812345670', courseId: 1 },
-    { id: 2, name: 'Aarav Sharma', email: 'aarav@example.com', phone: '9812345671', courseId: 2 },
-    { id: 3, name: 'Priya Deshmukh', email: 'priya@example.com', phone: '9812345672', courseId: 1 }
-  ];
-  var nextStudentId = 4;
+        valid = false;
 
-  function courseName(id){
-    var match = courses.filter(function(c){ return c.id === id; })[0];
-    return match ? match.name : '\u2014';
-  }
+        alert("Please accept the confirmation checkbox.");
 
-  function renderStudents(){
-    var body = document.getElementById('dbTableBody');
-    if (students.length === 0) {
-      body.innerHTML = '<tr class="empty-row"><td colspan="5">No students in the database.</td></tr>';
-      return;
     }
-    body.innerHTML = students.map(function(s){
-      return '<tr><td>' + s.id + '</td><td>' + escapeHtml(s.name) + '</td><td>' + escapeHtml(s.email) +
-             '</td><td>' + escapeHtml(s.phone) + '</td><td>' + courseName(s.courseId) + '</td></tr>';
-    }).join('');
-  }
 
-  function setSql(text){
-    document.getElementById('dbSqlText').textContent = text;
-  }
 
-  function populateCourseSelect(sel){
-    sel.innerHTML = courses.map(function(c){ return '<option value="' + c.id + '">' + c.name + '</option>'; }).join('');
-  }
-  function populateStudentSelect(sel){
-    if (students.length === 0) { sel.innerHTML = '<option value="">No students</option>'; return; }
-    sel.innerHTML = students.map(function(s){ return '<option value="' + s.id + '">' + escapeHtml(s.name) + '</option>'; }).join('');
-  }
+    return valid;
 
-  populateCourseSelect(document.getElementById('aCourse'));
+}
 
-  var addForm = document.getElementById('addForm');
-  var updateForm = document.getElementById('updateForm');
-  var deleteForm = document.getElementById('deleteForm');
 
-  function hideAllForms(){
-    addForm.classList.remove('show');
-    updateForm.classList.remove('show');
-    deleteForm.classList.remove('show');
-  }
+function previewStudent() {
 
-  document.getElementById('btnShowAdd').addEventListener('click', function(){
-    var wasShown = addForm.classList.contains('show');
-    hideAllForms();
-    if (!wasShown) addForm.classList.add('show');
-  });
-  document.getElementById('btnShowUpdate').addEventListener('click', function(){
-    var wasShown = updateForm.classList.contains('show');
-    hideAllForms();
-    if (!wasShown) { populateStudentSelect(document.getElementById('uStudent')); updateForm.classList.add('show'); }
-  });
-  document.getElementById('btnShowDelete').addEventListener('click', function(){
-    var wasShown = deleteForm.classList.contains('show');
-    hideAllForms();
-    if (!wasShown) { populateStudentSelect(document.getElementById('dStudent')); deleteForm.classList.add('show'); }
-  });
+    if (!validate()) {
 
-  addForm.addEventListener('submit', function(e){
-    e.preventDefault();
-    var name = document.getElementById('aName').value.trim();
-    var email = document.getElementById('aEmail').value.trim();
-    var phone = document.getElementById('aPhone').value.trim();
-    var courseId = parseInt(document.getElementById('aCourse').value, 10);
-    var msg = document.getElementById('dbMsg');
+        alert("Please complete all required fields correctly.");
 
-    if (!name || !email || !phone) {
-      msg.innerHTML = '<div class="msg bad">Fill in name, email and phone.</div>';
-      return;
+        return;
+
     }
-    students.push({ id: nextStudentId++, name: name, email: email, phone: phone, courseId: courseId });
-    setSql("INSERT INTO students (name, email, phone) VALUES ('" + name + "', '" + email + "', '" + phone + "');");
-    renderStudents();
-    msg.innerHTML = '<div class="msg ok">Student added.</div>';
-    addForm.reset();
-    hideAllForms();
-  });
 
-  updateForm.addEventListener('submit', function(e){
-    e.preventDefault();
-    var id = parseInt(document.getElementById('uStudent').value, 10);
-    var phone = document.getElementById('uPhone').value.trim();
-    var msg = document.getElementById('dbMsg');
-    if (!phone) { msg.innerHTML = '<div class="msg bad">Enter a new phone number.</div>'; return; }
-    var s = students.filter(function(s){ return s.id === id; })[0];
-    if (s) { s.phone = phone; }
-    setSql("UPDATE students SET phone = '" + phone + "' WHERE student_id = " + id + ";");
-    renderStudents();
-    msg.innerHTML = '<div class="msg ok">Phone number updated.</div>';
-    updateForm.reset();
-    hideAllForms();
-  });
 
-  deleteForm.addEventListener('submit', function(e){
-    e.preventDefault();
-    var id = parseInt(document.getElementById('dStudent').value, 10);
-    students = students.filter(function(s){ return s.id !== id; });
-    setSql('DELETE FROM students WHERE student_id = ' + id + ';');
-    renderStudents();
-    document.getElementById('dbMsg').innerHTML = '<div class="msg ok">Student deleted.</div>';
-    hideAllForms();
-  });
+    const data = {
 
-  renderStudents();
-})();
+        "Student ID": value("studentId"),
+
+        "Name":
+            value("firstName") +
+            " " +
+            value("lastName"),
+
+        "Date of Birth": value("dob"),
+
+        "Gender": value("gender"),
+
+        "Phone": value("phone"),
+
+        "Email": value("email"),
+
+        "Course": value("course"),
+
+        "Department": value("department"),
+
+        "Semester": value("semester"),
+
+        "Admission Year": value("admissionYear"),
+
+        "Guardian": value("guardian"),
+
+        "Guardian Phone": value("guardianPhone"),
+
+        "City": value("city"),
+
+        "State": value("state")
+
+    };
+
+
+    let html = "";
+
+
+    Object.entries(data).forEach(([key, val]) => {
+
+        html += `
+
+            <div class="preview-item">
+
+                <small>${key}</small>
+
+                <strong>${val}</strong>
+
+            </div>
+
+        `;
+
+    });
+
+
+    document.getElementById("previewContent").innerHTML = html;
+
+    document.getElementById("preview").style.display = "block";
+
+
+    document
+        .getElementById("preview")
+        .scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+}
+
+
+form.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+
+    if (!validate()) {
+
+        alert("Please correct the highlighted fields.");
+
+        return;
+
+    }
+
+
+    const student = {
+
+        studentId: value("studentId"),
+
+        name:
+            value("firstName") +
+            " " +
+            value("lastName"),
+
+        course: value("course"),
+
+        department: value("department"),
+
+        semester: value("semester"),
+
+        email: value("email"),
+
+        phone: value("phone"),
+
+        registrationDate:
+            new Date().toLocaleDateString()
+
+    };
+
+
+    const existing =
+        JSON.parse(
+            localStorage.getItem("students") || "[]"
+        );
+
+
+    existing.push(student);
+
+
+    localStorage.setItem(
+        "students",
+        JSON.stringify(existing)
+    );
+
+
+    document.getElementById("successMessage").textContent =
+        "Student " +
+        student.name +
+        " has been registered successfully. Student ID: " +
+        student.studentId;
+
+
+    document.getElementById("success").style.display =
+        "block";
+
+
+    document.getElementById("success").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+
+    alert("Student registration successful!");
+
+});
+
+
+form.addEventListener("reset", function() {
+
+    setTimeout(() => {
+
+        document.getElementById("preview").style.display =
+            "none";
+
+        document.getElementById("success").style.display =
+            "none";
+
+        document
+            .querySelectorAll(".error")
+            .forEach(e =>
+                e.classList.remove("error")
+            );
+
+        document
+            .querySelectorAll(".error-text")
+            .forEach(e => e.remove());
+
+    }, 50);
+
+});
+
+
 </script>
+
 </body>
 </html>
